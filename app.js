@@ -91,15 +91,6 @@ $(document).ready(function(){
     })
 
     // AJAX Portion
-    fetch(’https://hack-or-snooze.herokuapp.com/stories').then(function(response) {
-        return response.json().then(function(data){
-        var stories = data;
-        stories.data.forEach(function(story) {
-           
-        })
-    })
-
-})
 
 
 });
