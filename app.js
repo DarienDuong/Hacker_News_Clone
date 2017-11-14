@@ -1,4 +1,17 @@
 $(document).ready(function(){
+    $.getJSON('https://hack-or-snooze.herokuapp.com/stories').then(function(response) {
+        response.data.forEach(function(story) {
+        console.log(story)
+        var newLi = `<li><span class="fa fa-star-o"></span> <a href=${story.url} target=_blank><b> ${story.title}</b></a><span class="link"> (${filterURL(story.url)})</span></li>`;
+
+        $('.urlLinks').append(newLi);
+
+        })
+    })
+
+   
+
+
 
     // Slide submit form on click
     $('#submit').on('click', function(e) {
@@ -8,26 +21,23 @@ $(document).ready(function(){
 
     
     // Extract the domain name from the website
-    function website(str) {
-	  for (var i = 7; i < str.length; i++) {
-	    if (str[i]+str[i+1]+str[i+2]+str[i+3] === 'www.') {
-	      var value = str.split('www.');
-	      return value[value.length-1];
-	    } else {
-	      var http = str.split('//');
-	      return http[http.length-1];
-	    }
-	  }
-	}
-    
+    function filterURL(string){
+      var urlArray = string.split("//")
+      var cleanURL = urlArray[1].split("/")
+      if(cleanURL[0].slice(0, 4) === "www."){
+        return cleanURL[0].slice(4)
+      } else {
+        return cleanURL[0]
+      }
+    }   
 
     // Append the new element once the form has been submitted 
     $('#form').on('submit', function(e) {
     	//Check to see if URL is valid
-    	var title = $('input').eq(0).val()
-    	var url = $('input').eq(1).val()
+    	var title = $('#inputTitle').val()
+    	var url = $('#inputURL').val()
     	
-    	var cleanurl = website(url);
+    	var cleanurl = filterURL(url);
 
 
 
