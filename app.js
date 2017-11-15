@@ -1,15 +1,98 @@
 $(document).ready(function(){
+    
+    // Populate with articles
+    // Here's the block of HTML elements which will be appended to the DOM
+    // <li>
+    //     <span class="fa fa-star-o"></span> 
+    //     <a href=${story.url} target=_blank>
+    //         <b> ${story.title}</b>
+    //     </a>
+    //     <span class="link"> (${filterURL(story.url)})</span>
+    //     <span id="story-id">${story.storyId}</span>
+    // </li>
+
+
+
     $.getJSON('https://hack-or-snooze.herokuapp.com/stories').then(function(response) {
         response.data.forEach(function(story) {
-        console.log(story)
-        var newLi = `<li><span class="fa fa-star-o"></span> <a href=${story.url} target=_blank><b> ${story.title}</b></a><span class="link"> (${filterURL(story.url)})</span></li>`;
+        var newLi = `<li><span class="fa fa-star-o"></span> <a href=${story.url} target=_blank><b> ${story.title}</b></a><span class="link"> (${filterURL(story.url)})</span><span id="story-id">${story.storyId}</span></li>`;
 
         $('.urlLinks').append(newLi);
 
         })
     })
 
+
+    // Create new users
+    $('#create-form').on("submit", function(e){
+        e.preventDefault()
+        $name = $("#create_name").val()
+        $userName = $("#create_userName").val()
+        $password = $("#create_password").val() 
+        
+        $.ajax({
+            url: "https://hack-or-snooze.herokuapp.com/users",
+            method: "POST",
+            data: {
+                data: {
+                    name: $name,
+                    username: $userName,
+                    password: $password
+                }
+            }
+        }).then(function(response){
+            $('#create-form').trigger('reset')
+            $('#loginModal').modal('hide');
+            console.log(response)
+        })
+    })
+
+
+    // Login user
+    $('#login-form').on("submit", function(e){
+        e.preventDefault()
+        $user_login = $("#login_user").val()
+        $password = $("#login_password").val() 
+        
+        $.ajax({
+            url: "https://hack-or-snooze.herokuapp.com/auth",
+            method: "POST",
+            data: {
+                data: {
+                    username: $user_login,
+                    password: $password
+                }
+            }
+        }).then(function(response){
+            $('#login-form').trigger('reset')
+            $('#loginModal').modal('hide')
+            localStorage.setItem('token', response.data.token)
+        })
+    })
+
+
+    // Get user document
+    function getUserName(){
+        var userObj = JSON.parse(atob(localStorage.getItem("token").split(".")[1]))
+        return userObj.username
+    }
+
+    var userName = getUserName()
+    $.ajax({
+        url: `https://hack-or-snooze.herokuapp.com/users/${userName}`,
+        method: "GET",
+        headers: {
+            Authorization: "Bearer " + localStorage.getItem("token")
+        }
+    }).then(function(response){
+        console.log(response)
+    })
+
+
+    // Post a new favorite 
    
+
+
 
 
 
@@ -55,11 +138,27 @@ $(document).ready(function(){
     // Event Delegation must be used as new items are added. They wont have the event listener
     // Make the stars clickable if want to add to favorite
     $("ol").on("click", ".fa-star-o", function(e){
-        $(e.target).toggleClass("fa-star").toggleClass("fa-star-o")
+        $(e.target).toggleClass("fa-star fa-star-o")
+        
+        var userName = getUserName()
+        $storyIdentity = $(e.target).parent().find("#story-id").text()
+        
+
+        $.ajax({
+            url: `https://hack-or-snooze.herokuapp.com/users/${userName}/favorites/${$storyIdentity}`,
+            method: "POST",
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
+        }).then(function(response) {
+            console.log(response)
+        })
+
     })
 
     $("ol").on("click", ".fa-star", function(e){
-        $(e.target).toggleClass("fa-star-o").toggleClass("fa-star")
+        $(e.target).toggleClass("fa-star-o fa-star")
+
     })
 
 
