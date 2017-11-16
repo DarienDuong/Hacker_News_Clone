@@ -8,19 +8,23 @@ $(document).ready(function(){
     //         <b> ${story.title}</b>
     //     </a>
     //     <span class="link"> (${filterURL(story.url)})</span>
-    //     <span id="story-id">${story.storyId}</span>
+    //     <span id="story-id">${story.storyId}</span><br>
+    //     <span id="article-user">by ${story.username}</span>
     // </li>
 
 
+    function getStories(){
+        $.getJSON('https://hack-or-snooze.herokuapp.com/stories').then(function(response) {
+            response.data.forEach(function(story) {
+            var newLi = `<li class= "list-group-item"><span class="fa fa-star-o"></span> <a href=${story.url} target=_blank><b> ${story.title}</b></a><span class="link"> (${filterURL(story.url)})</span><span class="story-id">${story.storyId}</span><br><span id="article-user">by ${story.username}</span></li>`;
 
-    $.getJSON('https://hack-or-snooze.herokuapp.com/stories').then(function(response) {
-        response.data.forEach(function(story) {
-        var newLi = `<li><span class="fa fa-star-o"></span> <a href=${story.url} target=_blank><b> ${story.title}</b></a><span class="link"> (${filterURL(story.url)})</span><span id="story-id">${story.storyId}</span></li>`;
+            $('.urlLinks').append(newLi);
 
-        $('.urlLinks').append(newLi);
+            })
+        })      
+    }
 
-        })
-    })
+    getStories()
 
 
     // Create new users
@@ -85,16 +89,67 @@ $(document).ready(function(){
             Authorization: "Bearer " + localStorage.getItem("token")
         }
     }).then(function(response){
+        
+        // DESTRUCTURE THE RESPONSE OBJECT
+        var {name, username, favorites, stories} = response.data
+        
+        // APPEND THE USER PROFILE INFORMATION
+        $('#panel1').append(`<p id="profile_text">Name - ${name}</p>`)
+        $('#panel1').append(`<p id="profile_text">Username - ${username}</p>`)
+        
+        // APPEND THE FAVORITE STORIES DOM ELEMENTS
+
+        favorites.forEach(function(favorite){
+            $("#panel2 ul").append(`<li class="list-group-item">${favorite.title} <button type="button" class="btn btn-danger btn-sm" id="deleteFavorite">Delete</button><span class="story-id">${favorite.storyId}</span></li>`)
+        })
+        
+        // APPEND THE USER STORIES 
+
+        stories.forEach(function(story){
+            $("#panel3 ul").append(`<li class="list-group-item">${story.title} <button type="button" class="btn btn-danger btn-sm" id="deleteStory">Delete</button><span class="story-id">${story.storyId}</span></li>`)
+        })
+        
         console.log(response)
     })
 
 
-    // Post a new favorite 
-   
+    //Delete a story from user profile
+    // Need event delegation since these elements technically don't exist yet
+    $('.list-group').on("click", "#deleteStory", function(e){
+
+        var $storyId = $(e.target).parent().find('.story-id').text()
+
+        $.ajax({
+            url: `https://hack-or-snooze.herokuapp.com/stories/${$storyId}`,
+            method: "DELETE",
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
+        }).then(function(response){
+            $(e.target).parent().remove()
+            $()
+            console.log(response)
+        })
+    })
 
 
+    // Delete favorite from user profile
+    $('.list-group').on("click", "#deleteFavorite", function(e){
+        userName = getUserName()
 
+        var $storyId = $(e.target).parent().find('.story-id').text()
 
+        $.ajax({
+            url: `https://hack-or-snooze.herokuapp.com/users/${userName}/favorites/${$storyId}`,
+            method: "DELETE",
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
+        }).then(function(response){
+            $(e.target).parent().remove()
+            console.log(response)
+        })
+    })
 
     // Slide submit form on click
     $('#submit').on('click', function(e) {
@@ -117,18 +172,33 @@ $(document).ready(function(){
     // Append the new element once the form has been submitted 
     $('#form').on('submit', function(e) {
     	//Check to see if URL is valid
-    	var title = $('#inputTitle').val()
-    	var url = $('#inputURL').val()
-    	
-    	var cleanurl = filterURL(url);
+        var userName = getUserName();
+    	var $title = $('#inputTitle').val();
+    	var $url = $('#inputURL').val();
+        var $author = $('#inputAuthor').val();
 
 
+        $.ajax({
+            method: "POST",
+            url: "https://hack-or-snooze.herokuapp.com/stories",
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            },
+            data: {
+                data: {
+                    username: userName,
+                    title: $title,
+                    author: $author,
+                    url: $url
+                }
+            }
+        }).then(function(response){
+            $('.urlLinks').empty()
+            getStories()
 
-        
-    	var newLi = `<li><span class="fa fa-star-o"></span><b> ${title}</b><span class="link"> (${cleanurl})</span></li>`;
-    	//If yes, append
+        })
 
-    	$('.urlLinks').append(newLi);
+
     	$('#form').slideToggle('slow');
 
     	$('#form').trigger('reset');
@@ -141,7 +211,7 @@ $(document).ready(function(){
         $(e.target).toggleClass("fa-star fa-star-o")
         
         var userName = getUserName()
-        $storyIdentity = $(e.target).parent().find("#story-id").text()
+        $storyIdentity = $(e.target).parent().find(".story-id").text()
         
 
         $.ajax({
@@ -198,8 +268,6 @@ $(document).ready(function(){
         $("#favorites").text("All")
 
     })
-
-    // AJAX Portion
 
 
 });

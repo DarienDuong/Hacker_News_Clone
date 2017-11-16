@@ -1,3 +1,7 @@
+h3{
+  text-align: center;
+}
+
 .divider {
 	margin-top: 7px;
 }
@@ -11,10 +15,29 @@
 	margin-top: 50px;
 }
 
+#article-user {
+  margin-left: 20px;
+}
+
 /* Hide the story id */
-#story-id {
+.story-id {
   display: none;
 }
+
+#profile_text {
+  display: inline-block;
+  width: 90%;
+  margin-left: 5%;
+}
+
+.list-group {
+    list-style: decimal inside !important
+}
+
+.list-group-item {
+    display: list-item !important
+}
+
 
 /* CSS FOR THE MODAL and SIGN IN */
 

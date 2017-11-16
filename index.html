@@ -8,9 +8,9 @@
 
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 </head>
-<body>
+<body style="background-color: beige">
 
-<nav class="navbar navbar-expand-lg navbar-light bg-danger">
+<nav class="navbar navbar-expand-lg navbar-light bg-danger sticky-top">
   <div class="container">
 	  <a class="navbar-brand" href="#">Hack or Snooze</a>
 	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,6 +29,7 @@
 
   </div>
 </nav>
+
 
 <!-- EXPERIMENTAL ONE -->
     <div class="container">
@@ -114,35 +115,83 @@
 </div> -->
 
 
-<div class="container">
-	<form id="form">
-	  <div class="form-group row">
-	    <label for="staticEmail" class="col-sm-2 col-form-label">Title</label>
-	    <div class="col-sm-7">
-	      <input type="text" class="form-control urlTitle" id="inputTitle" placeholder="Title" required>
-	    </div>
-	  </div>
-	  <div class="form-group row">
-	    <label for="inputPassword" class="col-sm-2 col-form-label">URL</label>
-	    <div class="col-sm-7">
-	      <input type="url" class="form-control" id="inputURL" placeholder="URL" required>
-	    </div>
-	  </div>
-	  <div class="row">
-	  	<div class="col-sm-2"></div>
-	  	<div class="col-sm-7">
-	  		<button type="submit" class="btn btn-secondary">Submit</button>
-	  	</div>
-	  </div>
-	</form>
-</div>
 
 <div class="container" id="list">
 	<div class="row">
-    <ol class="urlLinks">
+    <div class="col-lg-5">
+      <div>
+        <ul class="nav nav-tabs nav-justified">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#panel1" role="tab">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#panel2" role="tab">Favorited</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#panel3" role="tab">My Stories</a>
+            </li>
+        </ul>
+        <!-- Tab panels -->
+        <div class="tab-content card">
+            <!--Panel 1-->
+            <div class="tab-pane fade in show active" id="panel1" role="tabpanel">
+                <h3>Profile Information</h3>
+                <br>
 
-			
-		</ol>
+            </div>
+            <!--/.Panel 1-->
+            <!--Panel 2-->
+            <div class="tab-pane fade" id="panel2" role="tabpanel">
+                <h3>Favorited Stories</h3>
+                <br>
+                <ul class= "list-group">
+                  
+                </ul>
+            </div>
+            <!--/.Panel 2-->
+            <!--Panel 3-->
+            <div class="tab-pane fade" id="panel3" role="tabpanel">
+                <h3>Posted Stories</h3>
+                <br>
+                <ul class="list-group">
+                  
+                </ul>
+            </div>
+            <!--/.Panel 3-->
+        </div>
+        <form id="form">
+          <h3>Submit an Article</h3>
+          <div class="form-group row">
+            <label for="staticEmail" class="col-sm-2 col-form-label">Title</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control urlTitle" id="inputTitle" placeholder="Title" required>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="staticAuthor" class="col-sm-2 col-form-label">Author</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control inputAuthor" id="inputAuthor" placeholder="Author" required>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="inputPassword" class="col-sm-2 col-form-label">URL</label>
+            <div class="col-sm-10">
+              <input type="url" class="form-control" id="inputURL" placeholder="URL" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10">
+              <button type="submit" class="btn btn-secondary">Submit</button>
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </div>
+    <ol class="urlLinks list-group col-lg-7">
+      <h2>Top Stories</h2>
+    </ol>
 	</div>
 </div>
 
